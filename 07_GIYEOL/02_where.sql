@@ -135,3 +135,5 @@ or
      menu_price = 9000
 and
      menu_code > 10;
+
+-- test
