@@ -1,18 +1,18 @@
 -- 1
 select
-    employee_name
+    empdb_name
 from
-    tbl_employee
+    tbl_empdb
 where
-    employee_name like '%연' ;
+    empdb like '%연' ;
 -- 2.
 select
-    employee_name,
-    employee_phonenumber
+    empdb_name,
+    empdb_phonenumber
 from
-    tbl_employee
+    tbl_empdb
 where
-    employee_phonenumber
+    empdb_phonenumber
 not like '010%' ;
 -- 3
 select
@@ -101,3 +101,21 @@ where
     emp_sex ='woman' ;
 -- 2
 select
+    empdb_money,
+    empdb_specail
+from tbl_empdb
+where
+    empdb_money
+group by
+    sum(empdb_code = 5);
+-- 3
+select
+    empdb_code
+from
+    tbl_empdb
+where
+    empdb_money
+group by
+    empdb_code = 5;
+-- 4
+
