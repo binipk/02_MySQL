@@ -44,6 +44,13 @@ SELECT  -- 메인쿼리
                       WHERE menu_name = '열무김치라떼'
           );
 
+SELECT  -- 메인쿼리
+    category_name
+FROM
+    tbl_category
+WHERE
+    menu_name = '열무김치라떼';
+
 -- 민트미역국과 같은 카테고리의 메뉴조회(메뉴코드, 메뉴명, 가격, 주문가능여부)
 SELECT
       menu_code 메뉴코드

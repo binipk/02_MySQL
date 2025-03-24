@@ -31,6 +31,14 @@ SELECT
       tbl_menu a
 #   INNER JOIN tbl_category b ON a.category_code = b.category_code;
       JOIN tbl_category b ON a.category_code = b.category_code;
+SELECT
+    *
+  FROM
+      tbl_menu a
+  JOIN
+      tbl_category b ON a.category_code = b.category_code;
+
+
 
 -- USING
 -- 동일한 이름의 컬럼을 기준컬럼으로 사용
