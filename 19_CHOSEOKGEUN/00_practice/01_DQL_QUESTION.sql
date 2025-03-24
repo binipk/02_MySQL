@@ -1,12 +1,18 @@
 use empdb;
 -- 1. employee 테이블에서 이름 끝이 연으로 끝나는 사원의 이름을 출력하시오
-/*
+
+
     출력
 
     차태연
     전지연
 
-*/
+SELECT
+      emp_name
+  FROM
+      employee
+ WHERE
+      emp_name like '%연';
 
 -- 2. employee 테이블에서 전화번호 처음 3자리가 010이 아닌 사원의 이름, 전화번호를 출력하시오
 
