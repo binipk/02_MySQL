@@ -76,7 +76,7 @@ SELECT *FROM  tbl_rent;
 
 INSERT INTO tbl_rent(contractor_name) values ('유승제');
 
---    AUTO _INCREMEN
+--  AUTO _INCREMEN
 --  INSER시 PK컬럼에 자동으로 번호를 발생(중복되지 않게)시켜 저장할 수 있다.
 -- PK 컬럼이 아닌 컬럼은 사용할 수 없다.
 
