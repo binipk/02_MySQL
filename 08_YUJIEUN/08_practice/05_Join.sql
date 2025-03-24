@@ -12,6 +12,24 @@
     */
 
 
+        SELECT
+               EMP_ID AS '사원번호'
+             , EMP_NAME AS '직원명'
+             , PHONE AS '전화번호'
+             , HIRE_DATE AS '입사일'
+             , QUIT_YN AS '퇴직여부'
+        FROM
+            EMPLOYEE
+        WHERE
+            QUIT_YN = 'N'
+          AND
+            PHONE LIKE '%2'
+#         ORDER BY DATEDIFF(NOW(), HIRE_DATE) ASC
+        ORDER BY HIRE_DATE DESC
+#         LIMIT 1,3;
+        LIMIT 3;
+
+
 -- 2. 재직 중인 ‘대리’들의 직원명, 직급명, 급여, 사원번호, 이메일, 전화번호, 입사일을 출력하세요.
 -- 단, 급여를 기준으로 내림차순 출력하세요.
 
@@ -26,6 +44,21 @@
         전형돈     대리      2000000     830807-1121321  jun_hd@ohgiraffers.com    2012-12-12 00:00:00
 
     */
+
+
+    SELECT    a.EMP_NAME 사원명
+            , b.JOB_NAME 직급명
+            , a.SALARY 급여
+            , a.EMP_NO 주민번호
+            , a.EMAIL 이메일
+            , a.HIRE_DATE 입사일
+            FROM EMPLOYEE a
+            JOIN JOB b ON a.JOB_CODE = b.JOB_CODE
+            WHERE a.QUIT_YN ='N'
+            AND b.JOB_NAME = '대리'
+            ORDER BY a.SALARY DESC;
+
+
 
 -- 3. 재직 중인 직원들을 대상으로 부서별 인원, 급여 합계, 급여 평균을 출력하고,
 --    마지막에는 전체 인원과 전체 직원의 급여 합계 및 평균이 출력되도록 하세요.

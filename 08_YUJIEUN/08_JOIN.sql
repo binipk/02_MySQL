@@ -113,7 +113,7 @@ SELECT
         , b.DEPT_TITLE
         , c.JOB_CODE
         FROM EMPLOYEE a
-        LEFT JOIN empdb.DEPARTMENT b on a.DEPT_CODE = b.DEPT_ID
+        LEFT JOIN DEPARTMENT b on a.DEPT_CODE = b.DEPT_ID
         LEFT JOIN JOB c ON a.JOB_CODE = c.JOB_CODE;
 
 
@@ -121,12 +121,12 @@ SELECT
     a.EMP_NAME
      , b.DEPT_TITLE
      , c.JOB_CODE
-     , e
+     , e NATION_NAME
 FROM EMPLOYEE a
-         LEFT JOIN empdb.DEPARTMENT b on a.DEPT_CODE = b.DEPT_ID
+         LEFT JOIN DEPARTMENT b on a.DEPT_CODE = b.DEPT_ID
          LEFT JOIN JOB c ON a.JOB_CODE = c.JOB_CODE
          LEFT JOIN LOCATION d ON b.LOCATION_ID = d.LOCAL_CODE
-         LEFT JOIN NATION e ON c = e.NATIONAL_CODE;
+         LEFT JOIN NATION e ON d.NATIONAL_CODE = e.NATIONAL_CODE;
 
 
 
