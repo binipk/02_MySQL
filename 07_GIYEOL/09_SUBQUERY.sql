@@ -199,7 +199,8 @@ from (select menu_name,
       where b.category_code = a.category_code)category_name,
           menu_price
       from tbl_menu a) v
--- -
+-- -문제 1
+
 
 
 

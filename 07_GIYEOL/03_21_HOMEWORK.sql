@@ -111,78 +111,97 @@ from tbl_files;
 
 -- 03.1
 select
-    emp_money ,          -- sum(급여) '급여 총 합'
-    sum(*) as '급여 총합'
+    sum(salary)'급여 총 합'         -- sum(급여) '급여 총 합'
 from
-    tbl_empdb
+    employee
 where
-    emp_sex ='woman' ;  -- substr(emp_no,8,1) 아느로 ('2','4');
+    substr(emp_no,8,1) in('2','4');  -- substr(emp_no,8,1) 아느로 ('2','4');
 -- 2
 select
-    empdb_money, -- sum(급여),0) 급여총합,
-    empdb_specail -- sum(급여 ifnull(보너스,*0)),0)"보너스 총합"
-from tbl_empdb
+  format(sum(salary),0) 급여총합,
+  format(sum(salary*ifnull(bonus,0)),0)보너스총합
+   -- empdb_money, -- sum(급여),0) 급여총합,
+   -- empdb_specail -- sum(급여 ifnull(보너스,*0)),0)"보너스 총합"
+from employee
 where
-    empdb_money      -- dept_code ='5일차';
+    DEPT_CODE ='D5';
+   /* empdb_money      -- dept_code ='5일차';
 group by
-    sum(empdb_code = 5);
+    sum(empdb_code = 5); */
 -- 3
 select
-    empdb_code -- sum((급여(급여 ifnull(보너스,+*0)))*12),0) as 연봉
+    format(sum(salary + (salary * ifnull(bonus,0))*12),0)as 연봉
+   -- empdb_code -- sum((급여(급여 ifnull(보너스,+*0)))*12),0) as 연봉
 from
-    tbl_empdb
+    employee
 where
-    empdb_money
-group by
-    empdb_code = 5;  -- ='5일차';
+    DEPT_CODE ='D5';
+ -- group by
+    -- empdb_code = 5;  -- ='5일차';
 -- 4
 select
-    empdb_money,                  -- (sum(substr(emp_no,8,1)in(1,3) next money else 0 end),0) "남자급여",
+    format(sum(case when substr(emp_no,8,1)in (1,3)then employee.SALARY else 0 end),0)"남사원급여",
+    format(sum(case when substr(emp_no,8,1)in (2,4)then employee.SALARY else 0 end),0)"여사원급여"
+from employee;
+   /* empdb_money,                  -- (sum(substr(emp_no,8,1)in(1,3) next money else 0 end),0) "남자급여",
     sum(man) as '남사원 급여 합계', -- (sum(substr(emp_no,8,1)in(2,4) next money else 0 end),0) "여자급여"
     sum(woman) as '여사원 급여 합계'
 from
         tbl_empdb   -- ;
 group by
-    empdb_money = man;
+    empdb_money = man; */
 
 -- 5
 select
-    empdb_part,      -- count(dept_code)"부서 수" //null은 자동 제외
-    count(empdb_part)
+    count(distinct  DEPT_CODE) "부서 수"
+    -- empdb_part,      -- count(dept_code)"부서 수" //null은 자동 제외
+    -- count(empdb_part)
 from
-    tbl_empdb    -- ;
-group by
-    empdb_part is not null;
+   employee;
+   -- group by
+   --  empdb_part is not null;
 -- 04.01
 select
+    JOB_CODE 직급코드,
+    count(JOB_CODE)'직급별 사원수',
+    truncate(avg(SALARY),0)평균급여
+from
+    employee
+where
+    JOB_CODE <> 'j1'
+group by
+    JOB_CODE
+order by
+    JOB_CODE;
+/* select
     empdb_code,   -- job_code 직급코드,
     empdb_part,   -- count(job_code)'직급별 사원수',
     empdb_money = avg(*) as '평균급여' -- cut(avg(급여),0) 평균급여
 from
-        tbl_empdb     -- where job_code is not 'j1'
+        employee     -- where job_code is not 'j1'
 group by              -- group by job_code
-    empdb_code is not like '%j1'; -- order by job_code;
+    empdb_code is not like '%j1'; -- order by job_code; */
 -- 2
-select
+/* select
     empdb_year,  -- (year from hire_date) 입사년,
     empdb_people  -- count(*) 인원수 // null 포함
 from
-    tbl_empdb  -- where job_code is not 'j1'
+    employee  -- where job_code is not 'j1'
 group by       -- group by 추출물(year from hire_date)
-    empdb_year asc; -- order by hire_code;
+    empdb_year asc; -- order by hire_code; */
 -- 3
-select
+/* select
     empdb_maile,        -- case_substr(emp_no,8,1)
     sum(empdb_money), -- when 1 and '남' when 3 and '남' another '여'
     sum(empdb_people) -- end as 성별, (truncate(avg(급여),0),0) as 평균,
                       -- (sum(급여),0) as 합계, count(*) as 인원수
 from
-    tbl_empdb
+    employee
 group by      -- case substr(emp_no,8,1)
     empdb_,maile -- when 1 and '남' when 3 and '남' another '여'end
-having avg(empdb_maile='man',empdb_maile ='woman'); -- order by emp_people ;
+having avg(empdb_maile='man',empdb_maile ='woman'); -- order by emp_people ; */
 -- 4
-select
+/*select
     empdb_part,        -- ifnull(job_code,'총원') 직급,
     count(*) as '인원수'
 from
@@ -191,4 +210,70 @@ group by
     empdb_part ;  -- jpb_code
                   -- where
                   -- count(*) >=3
-                  -- order by job_code;
+                  -- order by job_code; */
+
+
+
+-- 조인 문제 1
+/* select
+    EMP_ID,
+    EMP_NAME,
+    PHONE,
+    HIRE_DATE,
+    QUIT_DATE
+    from
+        employee
+where
+    PHONE like '%2' between HIRE_DATE= 'Y' and
+    quit_date = 'Y' or hire_date ='N';
+
+-- 2
+select
+    EMP_NAME,
+    SAL_LEVEL,
+    SALARY,
+    EMP_ID,
+    EMAIL,
+    HIRE_DATE
+from
+    employee
+where
+    (HIRE_DATE = 'Y') and (SAL_LEVEL ='대리')
+order by
+    SAL_LEVEL desc; */
+
+-- 1
+select
+    EMP_ID 사원번호,
+    EMP_NAME 사원명,
+    PHONE 전화번호,
+    HIRE_DATE 입사일,
+    QUIT_yn 퇴직여부
+from
+    employee
+where
+    QUIT_YN = 'N' and
+    PHONE like '%2'
+order by
+    hire_date desc
+limit 3;
+
+-- 2.
+select
+    a.EMP_NAME 사원명,
+    b.job_name 직급명,
+    a.SALARY 급여,
+    a.EMP_no 주민번호,
+    a.EMAIL 이메일,
+    a.PHONE 전화번호,
+    a.HIRE_DATE 입사일
+from
+    employee a
+join job b on a.job_code =b.JOB_CODE
+where
+    a.QUIT_YN = 'N'
+and
+    b.JOB_name = '대리'
+order by
+    a.SALARY desc;
+-- 3

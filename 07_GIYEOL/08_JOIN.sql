@@ -93,7 +93,7 @@ left join location d on b.LOCATION_ID = d.LOCAL_CODE
 left join nation e on d.NATIONAL_CODE = e.NATIONAL_CODE;
  -- null 값 포함 inner join , join 값이 정해진 인원만 출력
 select
-    a.natuere
+    a.natuere;
 
 
 
