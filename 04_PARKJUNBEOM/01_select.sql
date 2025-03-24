@@ -9,7 +9,7 @@
 
 
 /*
-    ***  DQL 구조 ***
+      DQL 구조
     SELECT 컬럼명    (5) -- 필수
       FROM 테이블명  (1) -- 필수
      WHERE 조건절(필터링) (2)
@@ -17,15 +17,16 @@
      HAVING 조건절(그룹핑에 대해 필터링) (4)
      ORDER BY 정렬기준 (6)
 
-    1. SELECT : 조회하고자 하는 컬럼명을 기술한다. 여러 개를 기술하고자 하면
-                쉼표(,)로 구분하고 모든 컬럼 조회시 '*'을 사용
-    2. FROM   : 조회 대상 컬럼이 포함된 테이블명을 기술
-    3. WHERE  :
-                행을 선택하는 조건을 기술한다.
-                여러 개의 제한 조건을 포함할수 있으며, 각각의 제한 조건은 논리
-                연산자로 연결한다.
-                제한 조건을 만족시키는 행들만 ResultSet에 포함된다.
-    4. ORDER BY : 정렬한 컬럼을 기준으로 오름(ASC)/내림차순(DESC) 지정
+
+SELECT : 조회하고자 하는 컬럼명을 기술한다. 여러 개를 기술하고자 하면
+             쉼표(,)로 구분하고 모든 컬럼 조회시 '*'을 사용
+FROM   : 조회 대상 컬럼이 포함된 테이블명을 기술
+WHERE  :
+          행을 선택하는 조건을 기술한다.
+          여러 개의 제한 조건을 포함할수 있으며, 각각의 제한 조건은 논리
+          연산자로 연결한다.
+          제한 조건을 만족시키는 행들만 ResultSet에 포함된다.
+ORDER BY : 정렬한 컬럼을 기준으로 오름(ASC)/내림차순(DESC) 지정
 */
 
 SELECT * FROM tbl_menu;
@@ -44,11 +45,12 @@ SELECT
     ,   ref_category_code
     FROM tbl_category;
 
-SELECT
-        menu_name
-    ,   category_name
-    FROM tbl_menu;
-    JOIN tbl_category 1..n<->1: ON tbl_menu.category_code = tbl_category.category_code
+SELECT menu_name
+     , category_name
+FROM tbl_menu
+         JOIN tbl_category 1..n<->1:
+ON tbl_menu.category_code = tbl_category.category_code;
+
 
 SELECT 7 + 3;
 
@@ -57,7 +59,7 @@ SELECT 6% 3,  6 % 4;
 SELECT CONCAT('유', '', '관순');
 
 SELECT CONCAT('메뉴 이름은', menu_name, '이고, 가격은'
-        ,menu_price, '원 입니다');
+        ,menu_price, '원 입니다')
     FROM tbl_menu;
 
 SELECT  7 + 3 AS '합';
