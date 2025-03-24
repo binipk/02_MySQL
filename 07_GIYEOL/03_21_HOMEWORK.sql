@@ -71,20 +71,24 @@ order by
     EMP_NAME;
 -- 02.1
 select
-    employee_id,
-    employee_name,
-    employee_num,   -- concat(substr(emp_no,1,8),'****')주민번호
-    employee_money  -- rpad(substr(emp_no,1,8),14,) 주민번호'*'
+    emp_id 사원번호,
+    emp_name 성명,
+    concat(substr(emp_no,1,8),'******')주민번호,   -- concat(substr(emp_no,1,8),'****')주민번호
+    rpad(substr(emp_no,1,8),14,) 주민번호'*',
+    format(급여(급여 ifnull(보너스,+*0)))*12,0) 연봉
+                    -- rpad(substr(emp_no,1,8),14,) 주민번호'*'
 from                -- format(급여(급여 ifnull(보너스,+*0)))*12,0) 연봉
-    tbl_employee
+    employee
 where                              -- where
-    row_count(employee_id,*,'15'); -- substr(emp_no,8,1)안으로 ('1','3');
+    substr(emp_no,8,1)안으로 ('1','3'); -- substr(emp_no,8,1)안으로 ('1','3');
 -- 2
 select
     emp_name,
-    emp_id  -- substring_index(이메일,,'@'1) email_id
+    substring_index(email,, '@'1) email_id
+  /*  emp_name,
+    emp_id  */-- substring_index(이메일,,'@'1) email_id
 from
-    tbl_empdb;
+   employee;
 
 -- 3
 CREATE TABLE tbl_files (
