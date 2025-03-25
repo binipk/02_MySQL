@@ -1,7 +1,15 @@
 use empdb;
-
+SELECT * FROM employee;
 -- 1. employee 테이블에서 남자만 사원번호, 사원명, 주민번호, 연봉을 나타내세요.
 -- 단, 주민번호의 뒷6자리는 *처리하세요.
+    SELECT EMP_ID 사원번호
+         , EMP_NAME 성명
+         , CONCAT(SUBSTR(EMP_NO, 1, 8),'******') AS 주민번호
+# RAPD(문자열, 조작해서만들길이, 오른쪽에붙일문자)
+#          , RPAD(SUBSTR(EMP_NO, 1, 8),14,'*') AS 주민번호
+         , SALARY 연봉
+      FROM employee
+    WHERE EMP_NO LIKE '%-1%' OR EMP_NO LIKE '%-3%';
 
     /*
         --------------- 출력 예시 ------------------------
@@ -21,6 +29,10 @@ use empdb;
 
 
 -- 2. EMPLOYEE 테이블에서 사원명, 아이디(이메일 @ 앞부분)을 조회하세요.
+        SELECT EMP_NAME emp_name
+             , SUBSTRING_INDEX(EMAIL, '@',1) email_id
+          FROM employee;
+
     /*
         --------- 출력 예시 -----------
         emp_name        email_id
@@ -50,6 +62,11 @@ INSERT INTO tbl_files VALUES(3, 'c:\\documents\\resume.hwp');
 COMMIT;
 SELECT * FROM tbl_files;
 
+# 마지막 원소는 -1
+# 마지막에서 두번째는 -2 . . .
+SELECT file_no 파일번호
+     , SUBSTRING_INDEX(file_path, '\\', -1) 파일명
+  FROM tbl_files;
 /*
 출력결과 :
 --------------------------
