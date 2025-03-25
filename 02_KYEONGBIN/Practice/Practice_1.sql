@@ -38,8 +38,30 @@ ORDER BY
 
 -- 5. 사원별 입사일, 퇴사일, 근무기간(일)을 조회하세요. 퇴사자 역시 조회되어야 합니다.
 
-# PASS
+/* 출력 (24 row)
+    선동일 1990-02-06 00:00:00  12488 N
+    송종기 2001-09-01 00:00:00  8263  N
+    노옹철 2001-01-01 00:00:00  8506  N
+    송은희 1996-05-03 00:00:00  10210 N
+    ...
+*/
 
+SELECT
+    EMP_NAME 이름
+,   DATE_FORMAT(HIRE_DATE, '%Y-%m-%d (%W)') 입사일
+,   CASE
+        WHEN QUIT_DATE IS NULL THEN '미정'
+        ELSE QUIT_DATE
+        END '퇴사일'
+,   DATEDIFF(COALESCE(QUIT_DATE, Current_DATE), HIRE_DATE) 근속일수
+,   CASE
+        WHEN QUIT_YN LIKE 'N' THEN '재직중'
+        ELSE '퇴사'
+        END 재직여부
+FROM
+    employee;
+
+SELECT * FROM employee;
 
 -- 6. 재직 중이고 휴대폰 마지막 자리가 2인 직원 중 입사일이 가장 최근인 직원 3명의 사원번호,
 -- 직원명, 전화번호, 입사일, 퇴직여부를 출력하세요.
