@@ -32,8 +32,8 @@ use empdb;
         15,760,000      745,000
     */
 
-    SELECT    FORMAT(ROUND(SUM(SALARY),0),0) AS '급여총합'
-            , FORMAT(ROUND(SUM(BONUS*SALARY),0),0)AS '보너스 총합'
+    SELECT    FORMAT(SUM(SALARY),0) AS '급여총합'
+            , FORMAT(SUM(SALARY*IFNULL(BONUS,0)),0) AS '보너스 총합'
             FROM EMPLOYEE
             WHERE DEPT_CODE ='D5';
 
@@ -47,11 +47,9 @@ use empdb;
         198,060,000
 
 */
-    SELECT  SUM(SALARY*BONUS) AS '연봉'
-            FROM EMPLOYEE e
-            GROUP BY
-                    CASE BONUS IS NULL THEN
-    WHERE DEPT_CODE  = 'D5';
+    SELECT  FORMAT((SUM((SALARY+(SALARY*IFNULL(BONUS,0)))*12)),0) AS '연봉'
+            FROM EMPLOYEE
+            WHERE DEPT_CODE  = 'D5';
 
 
 
@@ -64,10 +62,14 @@ use empdb;
          49,760,000                24,816,240
     */
 
-    SELECT SALARY
-           FROM EMPLOYEE
-            GROUP BY
-            CASE SUBSTRING(EMP_NO,8,1 ) IN ('1','3') THEN
+    SELECT  FORMAT(SUM(CASE WHEN SUBSTRING(EMP_NO,8,1) IN (1,3) THEN SALARY
+                ELSE 0
+                END),0) '남사원 급여 합계',
+            FORMAT(SUM(CASE WHEN SUBSTRING(EMP_NO,8,1) IN (2,4) THEN SALARY
+                ELSE 0
+                END),0) '여사원 급여 합계'
+            FROM EMPLOYEE;
+
 
 -- 5.  [EMPLOYEE] 테이블에서 사원들이 속해있는 부서의 수를 조회
 -- (NULL은 제외하고, 중복된 부서는 하나로 카운팅)
@@ -80,3 +82,6 @@ use empdb;
     */
 
 -- (NULL은 제외하고, 중복된 부서는 하나로 카운팅)
+
+    SELECT  COUNT(DISTINCT DEPT_CODE) 부서수
+            FROM EMPLOYEE;
