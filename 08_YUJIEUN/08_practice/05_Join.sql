@@ -78,6 +78,10 @@
 
     */
 
+    SELECT DEPT_TITLE 부서명,
+           COUNT(JOB_CODE) 인원,
+           FORMAT(SUM(SALARY),0) 급여합계
+           FORMAT(AVG(SALARY),0)
 
 
 
