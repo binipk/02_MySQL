@@ -321,6 +321,26 @@ SELECT
   FROM
       tbl_menu;
 
+/*
+선택함수 case
+여러 가지 경우에 선택을할 수 있는 기능을 제공함 (범위값도 가능)
+작성법                               리턴값 타입
+----------------------------------------------------------------------------------------------
+(타입1)
+CASE WHEN 조건1 THEN 결과1
+WHEN 조건2 THEN 결과2                    결과
+WHEN 조건3 THEN 결과3
+ELSE 결과
+END
+(타입2)
+CASE 표현식
+WHEN 값1 THEN 결과1
+WHEN 값2 THEN 결과2
+WHEN 값3 THEN 결과3
+ELSE 결과
+END
+
+ */
 SELECT
       menu_name
     , menu_price
