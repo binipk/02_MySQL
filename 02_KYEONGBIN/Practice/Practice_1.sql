@@ -48,18 +48,18 @@ ORDER BY
 
 SELECT
     EMP_NAME 이름
-,   DATE_FORMAT(HIRE_DATE, '%Y-%m-%d (%W)') 입사일
+,   DATE_FORMAT(HIRE_DATE, '%Y-%m-%d %W') 입사일
 ,   CASE
         WHEN QUIT_DATE IS NULL THEN '미정'
         ELSE QUIT_DATE
         END '퇴사일'
-,   DATEDIFF(COALESCE(QUIT_DATE, Current_DATE), HIRE_DATE) 근속일수
+,   DATEDIFF(COALESCE(QUIT_DATE, Current_DATE), HIRE_DATE) '%일' 근속일수
 ,   CASE
         WHEN QUIT_YN LIKE 'N' THEN '재직중'
         ELSE '퇴사'
         END 재직여부
 FROM
-    employee;
+    EMPLOYEE;
 
 SELECT * FROM employee;
 
