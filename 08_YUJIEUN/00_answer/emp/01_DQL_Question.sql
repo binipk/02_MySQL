@@ -8,14 +8,12 @@ use empdb;
     전지연
 
 */
-
-SELECT EMP_NAME AS 성명
-        FROM
-            EMPLOYEE
-        WHERE
-            EMP_NAME LIKE '%연';
-
-
+select
+    emp_name
+from
+    employee
+where
+    emp_name like '%연';
 -- 2. employee 테이블에서 전화번호 처음 3자리가 010이 아닌 사원의 이름, 전화번호를 출력하시오
 
 /*
@@ -25,16 +23,12 @@ SELECT EMP_NAME AS 성명
     하동운 01158456632
 
 */
-
-    SELECT
-          EMP_NAME AS '성명'
-        , PHONE AS '전화번호'
-            FROM
-                EMPLOYEE
-            WHERE
-                PHONE
-            NOT LIKE '010%';
-
+select
+    emp_name, phone
+from
+    employee
+where
+    phone not like '010%';
 -- 3. employee 테이블에서 메일주소 '_'의 앞이 4자이면서, DEPT_CODE가 D9 또는 D5이고 고용일이 90/01/01 ~ 01/12/31이면서, 월급이 270만원 이상인 사원의 전체 정보를 출력하시오
 
 /*
@@ -43,24 +37,18 @@ SELECT EMP_NAME AS 성명
 
 
 */
-
-    SELECT  *
-            FROM
-                EMPLOYEE
-            WHERE
-                EMAIL LIKE '____\_%'
-            AND
-                DEPT_CODE = 'D9'
-            OR
-                DEPT_CODE = 'D5'
-            AND
-                HIRE_DATE BETWEEN '90/01/01' AND '01/12/31'
-            AND
-                SALARY  >= 2700000;
-
-
-
-
+select
+    *
+from
+    employee
+where
+    (email like '____\_%')
+  and
+    (dept_code='D9' or dept_code='D5')
+  and
+    (hire_date between '90/01/01' and '01/12/31')
+  and
+    salary >= 2700000;
 -- 4. employee테이블에서 현재 근무중인 사원을 이름 오름차순으로 정렬해서 출력.
 
 /*
@@ -70,17 +58,14 @@ SELECT EMP_NAME AS 성명
     ...
 
 */
-
-    SELECT    EMP_ID
-            , EMP_NAME
-            FROM
-                EMPLOYEE
-            WHERE
-                QUIT_YN = 'N'
-            ORDER BY
-                EMP_NAME ASC;
-
-
+select
+    *
+from
+    employee
+where
+    quit_yn = 'N'
+order by
+    emp_name;
 
 
 -- 5. 사원별 입사일, 퇴사일, 근무기간(일)을 조회하세요. 퇴사자 역시 조회되어야 합니다.
@@ -93,15 +78,14 @@ SELECT EMP_NAME AS 성명
     ...
 
 */
-
-    SELECT
-            EMP_NAME
-            , HIRE_DATE AS '입사일'
-            ,DATEDIFF(NOW(), HIRE_DATE) AS '퇴사일'
-            ,  QUIT_YN
-            FROM EMPLOYEE;
-
-
+select
+    emp_name,
+    hire_date 입사일,
+    quit_date 퇴사일,
+    datediff(ifnull(quit_date, now()), hire_date) '근무기간(일)',
+    quit_yn
+from
+    employee;
 
 -- 6. 재직 중이고 휴대폰 마지막 자리가 2인 직원 중 입사일이 가장 최근인 직원 3명의 사원번호,
 -- 직원명, 전화번호, 입사일, 퇴직여부를 출력하세요.
@@ -113,22 +97,12 @@ SELECT EMP_NAME AS 성명
         211	전형돈	01044432222	2012-12-12 00:00:00	N
         206	박나라	01096935222	2008-04-02 00:00:00	N
     */
-
-
-    SELECT
-                EMP_ID AS '사원번호'
-              , EMP_NAME AS '직원명'
-              , PHONE AS '전화번호'
-              , HIRE_DATE AS '입사일'
-              , QUIT_YN AS '퇴직여부'
-            FROM
-                EMPLOYEE
-            WHERE
-                QUIT_YN = 'N'
-            AND
-                PHONE LIKE '%2'
-            ORDER BY DATEDIFF(NOW(), HIRE_DATE) ASC
-            LIMIT 1,3;
+    SELECT EMP_ID, EMP_NAME, PHONE, HIRE_DATE, QUIT_YN
+    FROM EMPLOYEE
+    WHERE PHONE LIKE '%2'
+      AND QUIT_YN <> 'Y'
+    ORDER BY HIRE_DATE DESC
+    LIMIT 3;
 
 
 -- 7. <1단계> 전체 직원 중 연결된 관리자가 있는 직원의 인원을 출력하세요.
@@ -141,8 +115,7 @@ SELECT EMP_NAME AS 성명
         16
     */
 
-        SELECT
-            COUNT(*) AS '직원의 인원'
-            FROM EMPLOYEE
-            WHERE MANAGER_ID
-                IS NOT NULL;
+    SELECT COUNT(*)
+    FROM EMPLOYEE
+    WHERE MANAGER_ID IS NOT NULL
+    ORDER BY EMP_NAME
