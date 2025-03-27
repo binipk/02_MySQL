@@ -5,11 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="de9dcf41-9ff0-4a1e-92e6-a5f30de2713a" name="변경" comment="commit">
-      <change afterPath="$PROJECT_DIR$/03_ORDER_BY.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/04_LIMIT.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/05_BUILT_IN_FUNCTIONS.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/06_GROUP_BY_HAVING.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_where.sql" beforeDir="false" afterPath="$PROJECT_DIR$/02_where.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/00_practice/01_DQL_QUESTION.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,6 +95,12 @@
       <workItem from="1742464456576" duration="384000" />
       <workItem from="1742515722123" duration="510000" />
       <workItem from="1742516240055" duration="27078000" />
+      <workItem from="1742774797656" duration="28257000" />
+      <workItem from="1742861122500" duration="5343000" />
+      <workItem from="1742882986453" duration="191000" />
+      <workItem from="1742883184585" duration="2501000" />
+      <workItem from="1742886119284" duration="56000" />
+      <workItem from="1742886182275" duration="5783000" />
     </task>
     <task id="LOCAL-00001" summary="11">
       <option name="closed" value="true" />
