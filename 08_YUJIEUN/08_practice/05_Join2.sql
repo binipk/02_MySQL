@@ -7,26 +7,25 @@
     203           송은희         16        해외영업2부    차장
 
 */
-SELECT
-    emp_id 사번,
-    emp_name 사원명,
-    truncate(
+
+    SELECT    a.EMP_ID 사번
+            , a.EMP_NAME 사원명
+            , truncate(
             datediff(
                     now(),
                     concat(
                             if(substr(emp_no, 8, 1) in (1, 2), 19, 20),
                             left(emp_no, 6)
                     )
-            ) / 365, 0) 나이,
-    dept_title 부서명,
-    job_name 직급명
-FROM
-    employee
-        LEFT JOIN department ON dept_code = dept_id
-        LEFT JOIN job  using(job_code)
-order by
-    나이
-limit 1;
+            ) / 365, 0) 나이
+            , b.DEPT_TITLE 부서명
+            , c.JOB_NAME 직급명
+        FROM EMPLOYEE a
+        JOIN DEPARTMENT b ON a.DEPT_CODE = b.DEPT_ID
+        JOIN JOB c using(JOB_CODE)
+        ORDER BY 나이
+        LIMIT 1;
+
 
 -- 2. 해외영업부에 근무하는 사원명, 직급명, 부서코드, 부서명을 조회하시오.
 /*
@@ -43,17 +42,16 @@ limit 1;
     유재식         부장              D6              해외영업2부
     정중하         부장              D6              해외영업2부
 */
-    SELECT
-        emp_name 사원명,
-        job_name 직급명,
-        dept_code 부서코드,
-        dept_title 부서명
-    FROM
-        employee
-            JOIN department ON dept_code = dept_id
-            JOIN job USING(job_code)
-    WHERE
-        dept_title LIKE '해외영업%';
+SELECT  a.EMP_NAME 사원명
+     , c.JOB_NAME 직급명
+     , a.DEPT_CODE 부서코드
+     , b.DEPT_TITLE 부서명
+FROM EMPLOYEE a
+         JOIN DEPARTMENT b ON a.DEPT_CODE = b.DEPT_ID
+         JOIN JOB c using(JOB_CODE)
+WHERE DEPT_TITLE LIKE '%해외영업%'
+;
+
 -- 3. 보너스포인트를 받는 직원들의 사원명, 보너스포인트, 부서명, 근무지역명을 조회하시오.
 
 /*
@@ -71,6 +69,14 @@ limit 1;
     이태림         0.35                  기술지원부     EU
 
 */
+    SELECT    a.EMP_NAME 사원명
+            , a.BONUS 보너스포인트
+            , b.DEPT_TITLE 부서명
+            , c.LOCAL_NAME 근무지역명
+            FROM EMPLOYEE a
+            LEFT JOIN DEPARTMENT b ON a.DEPT_CODE = b.DEPT_ID
+            LEFT JOIN LOCATION c ON b.LOCATION_ID = c.LOCAL_CODE
+            WHERE BONUS IS NOT NULL;
 
 
 
@@ -82,6 +88,21 @@ limit 1;
     ----------------------------------------------------------------------
     고두밋      부사장     4480000    53760000        2999999
 */
+
+    SELECT    a.EMP_NAME 사원명
+            , b.JOB_NAME 직급명
+            , a.SALARY 급여
+            ,(a.SALARY+a.SALARY*IFNULL(a.BONUS,0))*12 AS '연봉'
+            , c.MAX_SAL 최대급여
+            FROM EMPLOYEE a
+            JOIN JOB b using(JOB_CODE)
+            JOIN SAL_GRADE c using(SAL_LEVEL)
+            WHERE a.SALARY > c.MAX_SAL;
+
+
+
+
+
 
 
 -- 5. 한국(KO)과 일본(JP)에 근무하는 직원들의 사원명, 부서명, 지역명, 국가명을 조회하시오.
@@ -108,6 +129,15 @@ limit 1;
 
 */
 
+SELECT     a.EMP_NAME 사원명
+         , b.DEPT_TITLE 부서명
+         , c.LOCAL_NAME 지역명
+         , d.NATIONAL_NAME 국가명
+        FROM EMPLOYEE a
+        JOIN DEPARTMENT b ON a.DEPT_CODE = b.DEPT_ID
+        JOIN LOCATION c ON b.LOCATION_ID = c.LOCAL_CODE
+        JOIN NATION d ON c.NATIONAL_CODE = d.NATIONAL_CODE
+        WHERE c.NATIONAL_CODE IN ('KO','JP');
 
 -- 6. 같은 부서에 근무하는 직원들의 사원명, 부서명, 동료이름을 조회하시오. (self join 사용)
 --     사원명으로 오름차순정렬
@@ -126,6 +156,14 @@ limit 1;
     ...
     총 row 66
 */
+    SELECT    a.EMP_NAME 사원명
+            , b.DEPT_TITLE 부서명
+            , c.EMP_NAME 동료사원명
+            FROM EMPLOYEE a
+            JOIN DEPARTMENT b ON a.DEPT_CODE = b.DEPT_ID
+            JOIN EMPLOYEE c ON a.DEPT_CODE = c.DEPT_CODE
+            WHERE a.EMP_NAME != c.EMP_NAME
+            ORDER BY a.EMP_NAME;
 
 
 -- 7. 보너스포인트가 없는 직원들 중에서 직급이 차장과 사원인 직원들의 사원명, 직급명, 급여를 조회하시오.
@@ -143,6 +181,14 @@ limit 1;
     ...
     총 row수는 8
 */
+    SELECT  a.EMP_NAME 사원명
+            , b.JOB_NAME 직급명
+            , FORMAT(a.SALARY,0) 급여
+            FROM EMPLOYEE a
+            JOIN JOB b using(JOB_CODE)
+            WHERE a.BONUS IS NULL
+            AND b.JOB_NAME IN ('차장','사원');
+
 
 
 -- 8. 재직중인 직원과 퇴사한 직원의 수를 조회하시오.
@@ -154,4 +200,18 @@ limit 1;
   재직              23
   퇴사              1
 */
+
+    SELECT
+            CASE
+                WHEN QUIT_YN = 'N' THEN '재직'
+                WHEN QUIT_YN = 'Y' THEN '퇴사'
+            END AS 재직여부,
+            COUNT(*) 인원수
+            FROM EMPLOYEE
+            GROUP BY QUIT_YN;
+
+
+
+
+
 

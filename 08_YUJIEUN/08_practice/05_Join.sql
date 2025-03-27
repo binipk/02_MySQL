@@ -75,13 +75,39 @@
         해외영업2부      3       10100000            3366666.6666666665
         회계관리부       4       11000000            2750000
         <null>          21       66930000            3187142.8571428573
-
     */
 
-    SELECT DEPT_TITLE 부서명,
-           COUNT(JOB_CODE) 인원,
-           FORMAT(SUM(SALARY),0) 급여합계
-           FORMAT(AVG(SALARY),0)
+    SELECT        b.DEPT_TITLE 부서명
+                , COUNT(*) 인원
+                , SUM(SALARY) 급여합계
+                , AVG(SALARY) 급여평균
+        FROM EMPLOYEE a
+        JOIN DEPARTMENT b ON a.DEPT_CODE = b.DEPT_ID
+        WHERE a.QUIT_YN  <> 'Y'
+        GROUP BY b.DEPT_TITLE
+        WITH ROLLUP ;
+
+
+
+
+
+/*
+SELECT로 출력하고 싶은 컬럼 및 집계 함수를 지정한다.
+
+FROM과 JOIN을 이용해 필요한 테이블을 결합한다.
+
+WHERE로 원하는 조건(퇴사 여부 등)을 걸러낸다.
+
+GROUP BY로 부서명을 기준으로 그룹화한다.
+
+WITH ROLLUP을 사용해 각 부서 그룹별 집계 결과뿐 아니라 전체(누계)도 함께 보여준다.
+*/
+
+
+
+
+
+
 
 
 
@@ -105,6 +131,17 @@
         총 row 수는 24
     */
 
+    SELECT    a.EMP_NAME 사원명
+            , a.EMP_NO 주민등록번호
+            , a.PHONE 전화번호
+            , c.DEPT_TITLE 부서명
+            , b.JOB_NAME 직급명
+            FROM EMPLOYEE a
+            LEFT JOIN DEPARTMENT c ON a.DEPT_CODE = c.DEPT_ID
+            JOIN JOB b ON a.JOB_CODE = b.JOB_CODE
+            ORDER BY a.HIRE_DATE;
+
+
 -- 5. 2020년 12월 25일이 무슨 요일인지 조회하시오.(Join아님)
 
     /*
@@ -113,6 +150,20 @@
         ---------------------------
         Friday
     */
+
+
+     SELECT
+     CASE
+         WHEN WEEKDAY('2020-12-25') = 1 THEN 'Monday'
+         WHEN WEEKDAY('2020-12-25') = 2 THEN 'Tuesday'
+         WHEN WEEKDAY('2020-12-25') = 3 THEN 'Wednsday'
+         WHEN WEEKDAY('2020-12-25') = 4 THEN 'Thursday'
+         WHEN WEEKDAY('2020-12-25') = 5 THEN 'Friday'
+         WHEN WEEKDAY('2020-12-25') = 6 THEN 'Saturday'
+     END AS '요일'
+        ;
+
+
 
 -- 6. 주민번호가 70년대 생이면서 성별이 여자이고,
 --    성이 전씨인 직원들의 사원명, 주민번호, 부서명, 직급명을 조회하시오.
@@ -124,6 +175,19 @@
         전지연         770808-2665412       인사관리부    대리
     */
 
+    SELECT   a.EMP_NAME 사원명
+            , a.EMP_NO 주민번호
+            , b.DEPT_TITLE 부서명
+            , c.JOB_NAME 직급명
+           FROM EMPLOYEE a
+           JOIN DEPARTMENT b ON a.DEPT_CODE = b.DEPT_ID
+           JOIN JOB c using(JOB_CODE)
+            WHERE EMP_NAME LIKE '전%'
+            AND EMP_NO LIKE '7%'
+            AND SUBSTR(EMP_NO,8,1) IN (2,4);
+
+
+
 
 -- 7. 이름에 '형'자가 들어가는 직원들의 사번, 사원명, 직급명을 조회하시오.
 
@@ -133,6 +197,14 @@
         -----------------------------------------------------
         211        전형돈    대리
     */
+
+    SELECT    a.EMP_ID 사번
+            , a.EMP_NAME 사원명
+            , b.JOB_NAME 직급명
+            FROM EMPLOYEE a
+            JOIN JOB b using(JOB_CODE)
+            WHERE EMP_NAME LIKE '%형%'
+    ;
 
 -- 8. 해외영업팀에 근무하는 사원명, 직급명, 부서코드, 부서명을 조회하시오.
     /*
@@ -150,6 +222,16 @@
         정중하     부장        D6             해외영업2부
 
     */
+
+    SELECT  a.EMP_NAME 사원명
+            , c.JOB_NAME 직급명
+            , a.DEPT_CODE 부서코드
+            , b.DEPT_TITLE 부서명
+            FROM EMPLOYEE a
+            JOIN DEPARTMENT b ON a.DEPT_CODE = b.DEPT_ID
+            JOIN JOB c using(JOB_CODE)
+            WHERE DEPT_TITLE LIKE '%해외영업%'
+   ;
 
 
 
