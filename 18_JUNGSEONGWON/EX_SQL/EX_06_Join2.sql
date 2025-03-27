@@ -1,11 +1,11 @@
 use empdb;
 -- 1. 가장 나이가 적은 직원의 사번, 사원명, 나이, 부서명, 직급명을 조회하시오.
-
     SELECT
           a.EMP_ID 사번,a.EMP_NAME 사원명,a.EMP_NO 나이,d.DEPT_TITLE 부서명,JOB_NAME 직급명
         FROM employee a
         JOIN empdb.job j on j.JOB_CODE = a.JOB_CODE
         JOIN empdb.department d on d.DEPT_ID = a.DEPT_CODE
+
 /*
     --------------------- 출력예시 ---------------------------------------
     사번          사원명         나이      부서명         직급명
@@ -16,6 +16,17 @@ use empdb;
 
 
 -- 2. 해외영업부에 근무하는 사원명, 직급명, 부서코드, 부서명을 조회하시오.
+
+    SELECT
+            a.EMP_NAME 사원명, b.JOB_NAME 직급명, a.DEPT_CODE 부서코두,d.DEPT_TITLE 부서명
+    FROM employee a
+    JOIN JOB b ON a.JOB_CODE = b.JOB_CODE
+    JOIN department d ON a.DEPT_CODE = d.DEPT_ID
+
+    WHERE
+         DEPT_TITLE LIKE '%해외영업%';
+
+
 /*
     --------------------- 출력예시 ---------------------------------------
     사원명         직급명         부서코드            부서명
@@ -32,7 +43,13 @@ use empdb;
 */
 
 -- 3. 보너스포인트를 받는 직원들의 사원명, 보너스포인트, 부서명, 근무지역명을 조회하시오.
-
+   SELECT
+            a.EMP_NAME 사원명,a.BONUS 보너스포인트,d.DEPT_TITLE 부서명,LOCAL_NAME 근무지역명
+       FROM employee a
+        JOIN empdb.department d on d.DEPT_ID = a.DEPT_CODE
+        LEFT JOIN location ON LOCATION_ID= LOCAL_CODE
+        WHERE
+            BONUS is not null;
 /*
     --------------------- 출력예시 ---------------------------------------
     사원명         보너스포인트          부서명         근무지역명
@@ -53,6 +70,10 @@ use empdb;
 
 -- 4.  급여등급테이블 sal_grade의 등급별 최대급여(MAX_SAL)보다 많이 받는 직원들의 사원명, 직급명, 급여, 연봉을 조회하시오.
 --  (사원테이블과 급여등급테이블을 SAL_LEVEL컬럼기준으로 동등 조인할 것)
+    SELECT
+           a.EMP_NAME 사원명,d.DEPT_TITLE 작급명,SALARY 급여,(SALARY*12+SALARY*IFNULL(BONUS,0) 연봉
+        FROM employee
+        JOIN department d on d.DEPT_ID = a.DEPT_CODE
 /*
     --------------------- 출력예시 ---------------------------------------
     사원명     직급명     급여        연봉            최대급여
