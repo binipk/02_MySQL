@@ -67,7 +67,6 @@ SELECT
     , b.category_name
   FROM tbl_menu a
   RIGHT JOIN tbl_category b USING(category_code);
-
 -- ====================
 -- CROSS JOIN
 -- ===================

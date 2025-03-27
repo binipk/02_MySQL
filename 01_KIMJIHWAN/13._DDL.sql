@@ -118,7 +118,7 @@ ALTER TABLE product2 ALTER COLUMN prod_name SET DEFAULT '무명';
 ALTER TABLE product2 MODIFY prod_name VARCHAR(100);
 
 -- 열 제약조건 추가 및 삭제
-ALTER TABLE product1 DROP PRIMARY KEY ;
+ALTER TABLE pro duct1 DROP PRIMARY KEY ;
 
 ALTER TABLE product1 ADD PRIMARY KEY (id);
 

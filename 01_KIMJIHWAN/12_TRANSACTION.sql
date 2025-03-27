@@ -2,7 +2,7 @@
 -- TCL
 -- ===================================
 -- Transaction Control Language 트랜잭션 제어 언어
--- COMMI, ROLLBACK, SAVEPOINT 등이 있다.
+-- COMMIT, ROLLBACK, SAVEPOINT 등이 있다.
 
 # 트랜잭션이란
 -- 한꺼번에 수행되어야 할 최소의 작업 단위를 말한다.
