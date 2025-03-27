@@ -75,13 +75,16 @@ WHERE a.BONUS IS NOT NULL;
     ----------------------------------------------------------------------
     고두밋      부사장     4480000    53760000        2999999
 */
-SELECT EMP_NAME 사원명, JOB_NAME 직급명, SALARY 급여,
-       FORMAT((SALARY + (SALARY * IFNULL(BONUS, 0))) * 12, 0) 연봉,
-       MAX(SALARY) 최대급여
-FROM employee a
-JOIN  sal_grade b ON a.SAL_LEVEL = b.SAL_LEVEL
-JOIN  job c USING(JOB_CODE)
-GROUP BY
+SELECT
+    a.EMP_NAME 사원명, b.JOB_NAME 부사장, SALARY 급여,
+    (a.SALARY + (a.SALARY * IFNULL(a.BONUS, 0))) * 12 연봉,
+    c.MAX_SAL 최대급여
+FROM
+    employee a
+JOIN job b ON a.JOB_CODE = b.JOB_CODE
+JOIN sal_grade c USING(SAL_LEVEL)
+WHERE
+    a.SALARY > c.MAX_SAL;
 
 -- 5. 한국(KO)과 일본(JP)에 근무하는 직원들의 사원명, 부서명, 지역명, 국가명을 조회하시오.
 /*
@@ -101,12 +104,17 @@ GROUP BY
     심봉선         해외영업1부    ASIA2          일본
     윤은해         해외영업1부    ASIA2          일본
     대북혼         해외영업1부    ASIA2          일본
-    선동일         총무부,ASIA1                  한국
-    송종기         총무부,ASIA1                  한국
-    노옹철         총무부,ASIA1                  한국
-
+    선동일         총무부        ASIA1          한국
+    송종기         총무부        ASIA1          한국
+    노옹철         총무부        ASIA1          한국
 */
-    
+SELECT
+    a.EMP_NAME 사원명, b.DEPT_TITLE 부서명, c.LOCAL_NAME 지역명, d.NATIONAL_NAME 국가명
+FROM employee a
+JOIN department b ON a.DEPT_CODE = b.DEPT_ID
+JOIN location c ON c.LOCAL_CODE = b.LOCATION_ID
+JOIN nation d ON d.NATIONAL_CODE = c.NATIONAL_CODE
+WHERE d.NATIONAL_NAME IN ('한국', '일본');
 
 -- 6. 같은 부서에 근무하는 직원들의 사원명, 부서명, 동료이름을 조회하시오. (self join 사용)
 --     사원명으로 오름차순정렬
@@ -125,8 +133,13 @@ GROUP BY
     ...
     총 row 66
 */
+SELECT a.EMP_NAME 사원명, b.DEPT_TITLE 부서명, c.EMP_NAME 동료사원명
+  FROM employee a
+LEFT JOIN department b ON a.DEPT_CODE = b.DEPT_ID
+JOIN employee c ON a.DEPT_CODE = c.DEPT_CODE
+WHERE a.EMP_NAME != c.EMP_NAME
+ORDER BY a.EMP_NAME;
 
-   
 -- 7. 보너스포인트가 없는 직원들 중에서 직급이 차장과 사원인 직원들의 사원명, 직급명, 급여를 조회하시오.
 --     단, join과 in 연산자 사용할 것
 /*
@@ -142,7 +155,11 @@ GROUP BY
     ...
     총 row수는 8
 */
-
+SELECT e.EMP_NAME 사원명, j.JOB_NAME 직급명, FORMAT(e.SALARY , 0) 급여
+    FROM employee e
+JOIN job j on j.JOB_CODE = e.JOB_CODE
+WHERE e.BONUS IS NULL
+AND j.JOB_NAME IN ('차장', '사원');
 
 -- 8. 재직중인 직원과 퇴사한 직원의 수를 조회하시오.
 
@@ -153,3 +170,7 @@ GROUP BY
   재직              23
   퇴사              1
 */
+SELECT IF((e.QUIT_YN = 'Y'), '퇴사', '재직') 재직여부,
+       COUNT(*) 인원수
+    FROM employee e
+GROUP BY e.QUIT_YN;
