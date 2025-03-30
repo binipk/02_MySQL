@@ -1,10 +1,18 @@
 use empdb;
 -- 1. 가장 나이가 적은 직원의 사번, 사원명, 나이, 부서명, 직급명을 조회하시오.
-    SELECT
-          a.EMP_ID 사번,a.EMP_NAME 사원명,a.EMP_NO 나이,d.DEPT_TITLE 부서명,JOB_NAME 직급명
-        FROM employee a
-        JOIN empdb.job j on j.JOB_CODE = a.JOB_CODE
-        JOIN empdb.department d on d.DEPT_ID = a.DEPT_CODE
+
+SELECT a.EMP_ID          사번,
+       a.EMP_NAME      사원명,
+         truncate(DATEDIFF(now(),concat(
+                                if(substring(EMP_NO,8,1) in (1,2),19,20)
+                                ,left(EMP_NO,6))
+                            )/365,0)   나이, -- if문에서는 1900년대 생인지 2000년대 생인지 구분을하고
+                                            --  구분을 지은 다음에는 주민번호 뒷자리는 버린다.
+       d.DEPT_TITLE     부서명,
+       JOB_NAME         직급명
+    FROM employee a
+         JOIN empdb.job j on j.JOB_CODE = a.JOB_CODE
+         JOIN empdb.department d on d.DEPT_ID = a.DEPT_CODE;
 
 /*
     --------------------- 출력예시 ---------------------------------------
@@ -17,15 +25,15 @@ use empdb;
 
 -- 2. 해외영업부에 근무하는 사원명, 직급명, 부서코드, 부서명을 조회하시오.
 
-    SELECT
-            a.EMP_NAME 사원명, b.JOB_NAME 직급명, a.DEPT_CODE 부서코두,d.DEPT_TITLE 부서명
-    FROM employee a
-    JOIN JOB b ON a.JOB_CODE = b.JOB_CODE
-    JOIN department d ON a.DEPT_CODE = d.DEPT_ID
+SELECT a.EMP_NAME     사원명,
+       b.JOB_NAME     직급명,
+       a.DEPT_CODE   부서코두,
+       d.DEPT_TITLE    부서명
+FROM employee a
+     JOIN JOB b ON a.JOB_CODE = b.JOB_CODE
+     JOIN department d ON a.DEPT_CODE = d.DEPT_ID
 
-    WHERE
-         DEPT_TITLE LIKE '%해외영업%';
-
+     WHERE DEPT_TITLE LIKE '%해외영업%';
 
 /*
     --------------------- 출력예시 ---------------------------------------
@@ -43,13 +51,16 @@ use empdb;
 */
 
 -- 3. 보너스포인트를 받는 직원들의 사원명, 보너스포인트, 부서명, 근무지역명을 조회하시오.
-   SELECT
-            a.EMP_NAME 사원명,a.BONUS 보너스포인트,d.DEPT_TITLE 부서명,LOCAL_NAME 근무지역명
-       FROM employee a
-        JOIN empdb.department d on d.DEPT_ID = a.DEPT_CODE
-        LEFT JOIN location ON LOCATION_ID= LOCAL_CODE
-        WHERE
-            BONUS is not null;
+
+SELECT   EMP_NAME         사원명,
+         BONUS       보너스포인트,
+         DEPT_TITLE       부서명,
+         LOCAL_NAME    근무지역명
+    FROM employee
+         JOIN empdb.department d on d.DEPT_ID = DEPT_CODE
+         LEFT JOIN location ON LOCATION_ID = LOCAL_CODE
+         WHERE BONUS is not null;
+
 /*
     --------------------- 출력예시 ---------------------------------------
     사원명         보너스포인트          부서명         근무지역명
@@ -68,12 +79,21 @@ use empdb;
 
 
 
--- 4.  급여등급테이블 sal_grade의 등급별 최대급여(MAX_SAL)보다 많이 받는 직원들의 사원명, 직급명, 급여, 연봉을 조회하시오.
+-- 4.  급여등급테이블 sal_grade의 등급별 최대급여(MAX_SAL)보다 많이 받는) 직원들의 사원명, 직급명, 급여, 연봉을 조회하시오.
 --  (사원테이블과 급여등급테이블을 SAL_LEVEL컬럼기준으로 동등 조인할 것)
-    SELECT
-           a.EMP_NAME 사원명,d.DEPT_TITLE 작급명,SALARY 급여,(SALARY*12+SALARY*IFNULL(BONUS,0) 연봉
-        FROM employee
-        JOIN department d on d.DEPT_ID = a.DEPT_CODE
+
+SELECT
+        a.EMP_NAME                             사원명,
+        j.JOB_NAME                             직급명,
+        a.SALARY                                 급여,
+        (SALARY * 12 + IFNULL(BONUS, 0) * 12)    연봉,
+        MAX_SAL 최대급여
+    FROM employee a
+    JOIN job j USING(JOB_code)
+    JOIN sal_grade sg on a.SAL_LEVEL = sg.SAL_LEVEL
+    WHERE
+        salary > MAX_SAL;
+
 /*
     --------------------- 출력예시 ---------------------------------------
     사원명     직급명     급여        연봉            최대급여
@@ -83,6 +103,20 @@ use empdb;
 
 
 -- 5. 한국(KO)과 일본(JP)에 근무하는 직원들의 사원명, 부서명, 지역명, 국가명을 조회하시오.
+
+SELECT
+        a.EMP_NAME      사원명,
+        d.DEPT_TITLE    부서명,
+        l.LOCAL_NAME    지역명,
+        n.NATIONAL_NAME 국가명
+    FROM employee a
+         JOIN department d ON DEPT_CODE = DEPT_ID
+         JOIN location l ON d.LOCATION_ID = l.LOCAL_CODE
+         JOIN nation n USING(NATIONAL_CODE)
+    WHERE
+            LOCAL_CODE ='L1'
+        OR
+            LOCAL_CODE = 'L2';
 /*
     --------------------- 출력예시 ---------------------------------------
     사원명         부서명         지역명         국가명
@@ -109,6 +143,19 @@ use empdb;
 
 -- 6. 같은 부서에 근무하는 직원들의 사원명, 부서명, 동료이름을 조회하시오. (self join 사용)
 --     사원명으로 오름차순정렬
+SELECT
+            a.EMP_NAME    사원명,
+            d.DEPT_TITLE  부서명,
+            c.EMP_NAME 동료사원명
+        FROM employee a
+            JOIN employee c ON a.DEPT_CODE = c.DEPT_CODE
+         JOIN department d ON a.DEPT_CODE = DEPT_ID
+        where
+            a.EMP_NAME != c.EMP_NAME
+        ORDER BY
+            a.EMP_NAME;
+
+
 /*
     --------------------- 출력예시 ---------------------------------------
     사원명         부서명         동료사원명
@@ -127,6 +174,16 @@ use empdb;
 
 -- 7. 보너스포인트가 없는 직원들 중에서 직급이 차장과 사원인 직원들의 사원명, 직급명, 급여를 조회하시오.
 --     단, join과 in 연산자 사용할 것
+    SELECT
+            EMP_NAME  사원명,
+            j.JOB_NAME  직급명,
+            SALARY      급여
+        FROM employee
+        JOIN job j USING(JOB_CODE)
+        WHERE
+             JOB_NAME IN ('차장', '사원')
+             AND
+                BONUS IS NULL;
 /*
     --------------------- 출력예시 -------------
     사원명         직급명         급여
@@ -143,6 +200,11 @@ use empdb;
 
 
 -- 8. 재직중인 직원과 퇴사한 직원의 수를 조회하시오.
+    SELECT
+            IF(QUIT_YN = 'n','재직','퇴사') 재직여부
+          , COUNT(QUIT_YN = 'y') 인원수
+        FROM employee
+        GROUP BY QUIT_YN
 
 /*
   --------------------- 출력예시 -------------

@@ -55,7 +55,7 @@ SELECT
   FROM
        tbl_menu
  WHERE
-       category_code = (SELECT category_code
+      =  category_code (SELECT category_code
                           FROM tbl_menu
                          WHERE menu_name = '민트미역국'
                         );
